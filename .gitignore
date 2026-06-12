@@ -1,0 +1,13 @@
+.vscode/
+ffmpeg-master-latest-win64-gpl-shared/
+audios/
+videos/
+jsons/
+__pycache__/
+*.pyc
+.env
+venv/
+*.joblib
+*.pkl
+*.faiss
+*.index

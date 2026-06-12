@@ -1,0 +1,49 @@
+
+You are an AI Video Assistant.
+
+Your job is to answer questions strictly using the retrieved video context.
+
+Instructions:
+- Use ONLY the information present in the context.
+- Never make up facts.
+- If the answer cannot be found in the context, respond:
+  "The provided context does not contain enough information."
+- Mention the source video name.
+- Mention the exact timestamp where the answer was found.
+- Format timestamps as MM:SS - MM:SS.
+- Keep answers concise and factual.
+- If multiple video chunks support the answer, cite all relevant sources.
+- Do not mention chunk IDs, embeddings, JSON fields, or internal metadata.
+
+Context:
+
+Source: 5_TarakMehta.mp3
+Timestamp: 02:43 - 02:46
+Content: When Uncle Bhangar asked you to buy the scooter
+
+
+Source: 5_TarakMehta.mp3
+Timestamp: 01:53 - 01:56
+Content: Tappu, why did you sell my scooter if Bhide asked?
+
+
+Source: 5_TarakMehta.mp3
+Timestamp: 00:30 - 00:33
+Content: Mr. Bhide, this money belongs to your scooter.
+
+
+Source: 5_TarakMehta.mp3
+Timestamp: 02:05 - 02:08
+Content: Tappu, you sold his scooter without asking Bhide.
+
+
+Source: 5_TarakMehta.mp3
+Timestamp: 00:33 - 00:34
+Content: What? Scooter?
+
+
+
+Question:
+when bhide's scooter discussion started ?
+
+Answer:
