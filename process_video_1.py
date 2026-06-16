@@ -22,7 +22,7 @@ for file in os.listdir(video_dir):
         print(f"Already converted: {output_name}")
         continue
 
-    print(f"Converting: {file} → {output_name}")
+    print(f"Converting: {file} to {output_name}")
 
     subprocess.run([
         ffmpeg_path,
@@ -32,4 +32,4 @@ for file in os.listdir(video_dir):
         output_path
     ])
 
-print("✅ All videos converted!")
+print(" All videos converted!")

@@ -95,7 +95,7 @@ with open("prompt.txt", "w", encoding="utf-8") as f:
 
 def get_ollama_response(prompt_text):
 
-    print("🤖 Thinking... (Asking Gemma)")
+    print("Thinking... (Asking Gemma)")
 
     url = "http://localhost:11434/api/generate"
 
@@ -115,9 +115,6 @@ def get_ollama_response(prompt_text):
 
     except Exception as e:
         return f"Error connecting to Ollama: {e}"
-
-# Generate answer
-print(prompt)
 
 final_answer = get_ollama_response(prompt)
 
@@ -139,4 +136,4 @@ print("\n" + "=" * 50)
 print(final_answer)
 print("=" * 50)
 
-print("✅ Answer saved to response.txt")
+print("Answer saved to response.txt")

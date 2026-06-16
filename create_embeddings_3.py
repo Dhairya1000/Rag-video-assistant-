@@ -2,7 +2,6 @@ import requests
 import os
 import json
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import joblib 
 import faiss
@@ -18,18 +17,34 @@ def create_embedding(text_list):
         return []
     return response.get("embeddings", [])
 
-
-jsons = os.listdir("jsons")  # List all the jsons 
+jsons = os.listdir("jsons")  # List all the jsons
 my_dicts = []
-chunk_id = 0
+
+if os.path.exists("embeddings.joblib") and os.path.exists("video_index.faiss"):
+    old_df = joblib.load("embeddings.joblib")
+    processed_videos = set(old_df["source_name"])
+    index = faiss.read_index("video_index.faiss")
+    chunk_id = old_df["chunk_id"].max() + 1
+
+else:
+    old_df = pd.DataFrame()
+    processed_videos = set()
+    index = None
+    chunk_id = 0
 
 for json_file in jsons:
-    with open(f"jsons/{json_file}") as f:
+    source_name = os.path.splitext(json_file)[0]
+    if source_name in processed_videos:
+        print(f"Skipping {source_name}")
+        continue
+
+    with open(f"jsons/{json_file}",encoding="utf-8") as f:
         content = json.load(f)
     print(f"Creating Embeddings for {json_file}")
     embeddings = create_embedding([c['text'] for c in content['chunks']])
-
-    source_name = os.path.splitext(json_file)[0]
+    if len(embeddings) != len(content['chunks']):
+        print(f"Error in {json_file}")
+        continue
        
     for i, chunk in enumerate(content['chunks']):
         chunk['source_name'] = source_name
@@ -40,18 +55,32 @@ for json_file in jsons:
      
 # print(my_dicts)
 
-df = pd.DataFrame.from_records(my_dicts)
+if len(my_dicts) == 0:
+    print("No new videos found.")
+    exit()
 
+df = pd.DataFrame.from_records(my_dicts)
 vectors = np.vstack(df["embedding"]).astype("float32")
 
 faiss.normalize_L2(vectors)
-
-dimension = vectors.shape[1]
-
-index = faiss.IndexFlatIP(dimension)
-
+if index is None:
+    dimension = vectors.shape[1]
+    index = faiss.IndexFlatIP(dimension)
 index.add(vectors)
-
 faiss.write_index(index, "video_index.faiss")
 
-joblib.dump(df, "embeddings.joblib")
+updated_df = pd.concat(
+    [old_df, df],
+    ignore_index=True
+)
+
+joblib.dump(
+    updated_df,
+    "embeddings.joblib"
+)
+
+print()
+print("Embeddings updated successfully")
+print(f"New chunks added : {len(df)}")
+print(f"Total chunks : {len(updated_df)}")
+print(f"Total vectors in FAISS : {index.ntotal}")
